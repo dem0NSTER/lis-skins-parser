@@ -20,7 +20,7 @@ class ChromeDriver:
 
     def __create_driver(self) -> None:
         """This method make WedDriver. !!!Before you must use __set_options method!!!"""
-        self.__driver = driver = webdriver.Chrome(options=self.__options)
+        self.__driver = webdriver.Chrome(options=self.__options)
 
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
