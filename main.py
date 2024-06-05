@@ -9,9 +9,9 @@ options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option('useAutomationExtension', False)
 
 driver = webdriver.Chrome(options=options)
-driver.get("https://lis-skins.ru/market/csgo/?price_from=70&price_to=1000&is_without_souvenir=1")
-time.sleep(100000)
-page = driver.page_source
-
-driver.close()
-print(page)
+# driver.get("https://lis-skins.ru/market/csgo/?price_from=70&price_to=1000&is_without_souvenir=1")
+# time.sleep(100000)
+# page = driver.page_source
+#
+# driver.close()
+# print(page)

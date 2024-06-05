@@ -6,11 +6,11 @@ from selenium import webdriver
 class ChromeDriver:
     """Base class for drivers"""
 
-    def __init__(self, url: str):
+    def __init__(self, url=''):
         self.url = url
         self.html = None
+        self.driver = None
         self.__set_options()
-        self.driver = webdriver.Chrome(options=self.__options)
 
     def __set_options(self) -> None:
         """This metod can set options for WebDriver (user agent and other important opitons)"""
@@ -31,11 +31,11 @@ class LisSkinsDriver(ChromeDriver):
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
         # self.create_driver()
+        self.create_driver()
         self.driver.get(self.url)
         time.sleep(1)
         self.html = self.driver.page_source
         self.driver.close()
-        self.driver.quit()
         return self.html
 
     @property
@@ -74,8 +74,19 @@ class SteamDriver(ChromeDriver):
 
 
 if __name__ == '__main__':
-    driver = LisSkinsDriver(url=f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=5&is_without_souvenir=1&page={1}')
+    driver = LisSkinsDriver(
+        url=f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=5&is_without_souvenir=1&page={1}')
 
-    with open('index.html', 'w') as file:
-        file.write(driver.get_html())
+    # with open('index.html', 'w') as file:
+    #     file.write(driver.get_html())
+    page = 1
 
+    while True:
+        driver.url = f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=50&is_without_souvenir=1&page={page}'
+        with open(f'index_{page}.html', 'w') as file:
+            file.write(driver.get_html())
+
+        last_page = 2
+        if page == last_page:
+            break
+        page += 1

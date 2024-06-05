@@ -63,3 +63,24 @@ class ParserLisSkins:
         if item_discount and int(item_discount.text.strip().replace('%', '')) < -30:
             return item_discount.text.strip()
         return False
+
+
+if __name__ == '__main__':
+    parser = ParserLisSkins()
+    page = 1
+
+    while True:
+        with open(f'index_{page}.html') as file:
+            src = file.read()
+
+        parser.set_html(src)
+        count = parser.get_count_pages()
+        parser.get_data_on_page()
+
+        last_page = 2
+        if page == last_page:
+            break
+        page += 1
+
+    print(count)
+    parser.write_file()
