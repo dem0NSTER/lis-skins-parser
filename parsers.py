@@ -19,7 +19,7 @@ class ParserLisSkins:
         for item in self.__get_items():
             if not self.__check_discount(item):
                 continue
-            item_name = item.find(class_='name-inner').text.strip()
+            item_name = item.find('img').get('alt')
             item_price = item.find(class_='price').text.strip()
             steam_url = 'https://steamcommunity.com/market/listings/730/' + item_name.replace('�', '™')
             item_url = item.find(class_='name').get('href')
@@ -63,6 +63,10 @@ class ParserLisSkins:
         if item_discount and int(item_discount.text.strip().replace('%', '')) < -30:
             return item_discount.text.strip()
         return False
+
+
+class ParserSteam:
+    ...
 
 
 if __name__ == '__main__':

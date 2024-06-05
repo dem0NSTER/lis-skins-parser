@@ -1,7 +1,6 @@
 from drivers import LisSkinsDriver
 from parsers import ParserLisSkins
 
-
 driver = LisSkinsDriver()
 parser = ParserLisSkins()
 page = 1
