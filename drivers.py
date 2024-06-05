@@ -10,6 +10,7 @@ class ChromeDriver:
         self.url = url
         self.html = None
         self.__set_options()
+        self.driver = webdriver.Chrome(options=self.__options)
 
     def __set_options(self) -> None:
         """This metod can set options for WebDriver (user agent and other important opitons)"""
@@ -19,9 +20,9 @@ class ChromeDriver:
         self.__options.add_experimental_option("excludeSwitches", ["enable-automation"])
         self.__options.add_experimental_option('useAutomationExtension', False)
 
-    def __create_driver(self) -> None:
+    def create_driver(self) -> None:
         """This method make WedDriver. !!!Before you must use __set_options method!!!"""
-        self.__driver = webdriver.Chrome(options=self.__options)
+        self.driver = webdriver.Chrome(options=self.__options)
 
 
 class LisSkinsDriver(ChromeDriver):
@@ -29,12 +30,12 @@ class LisSkinsDriver(ChromeDriver):
 
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
-        self.__create_driver()
-        self.__driver.get(self.url)
+        # self.create_driver()
+        self.driver.get(self.url)
         time.sleep(1)
-        self.html = self.__driver.page_source
-        self.__driver.close()
-        self.__driver.quit()
+        self.html = self.driver.page_source
+        self.driver.close()
+        self.driver.quit()
         return self.html
 
     @property
@@ -53,4 +54,28 @@ class LisSkinsDriver(ChromeDriver):
 
 
 class SteamDriver(ChromeDriver):
-    ...
+    def get_html(self) -> str:
+        """this method get page's html code, return html code"""
+        ...
+
+    @property
+    def url(self):
+        return self.__url
+
+    @url.setter
+    def url(self, url):
+        if not type(url) == str:
+            raise ValueError('invalid link')
+
+        if not 'steamcommunity.com' in url:
+            raise ValueError('invalid link')
+
+        self.__url = url
+
+
+if __name__ == '__main__':
+    driver = LisSkinsDriver(url=f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=5&is_without_souvenir=1&page={1}')
+
+    with open('index.html', 'w') as file:
+        file.write(driver.get_html())
+

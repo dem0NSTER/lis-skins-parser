@@ -4,17 +4,16 @@ from bs4 import BeautifulSoup
 
 
 class ParserLisSkins:
-    def __init__(self, html: str, base_url: str):
-        self.data = html
-        self.base_url = base_url
+    def __init__(self, html=''):
+        self.html = html
         self.pages = 1
         self.__items_data = []
-        self.soup = BeautifulSoup(self.data, 'lxml')
+        self.soup = BeautifulSoup(self.html, 'lxml')
 
-    def get_count_pages(self) -> int:
-        """Get count of pages"""
-        self.pages = int(self.soup.find_all(class_='page-link')[-2].text)
-        return self.pages
+    def set_html(self, html: str) -> None:
+        """This method can change html code which it scraping"""
+        self.html = html
+        self.soup = BeautifulSoup(self.html, 'lxml')
 
     def get_data_on_page(self) -> None:
         for item in self.__get_items():
@@ -33,7 +32,21 @@ class ParserLisSkins:
                     'steam': steam_url
                 }
             )
-        self.__write_file()
+
+    def get_count_pages(self) -> int:
+        """Get count of pages"""
+        data = self.soup.find_all(class_='page-link')
+        if len(data) == 0:  # if sity have only on page!
+            self.pages = 1
+            return self.pages
+
+        self.pages = int(data[-2].text)
+        return self.pages
+
+    def write_file(self) -> None:
+        """This method write data about items to json file (results.json)"""
+        with open('results.json', 'w', encoding='utf-8') as f:
+            json.dump(self.__items_data, f, ensure_ascii=False, indent=4)
 
     def __get_items(self) -> list:
         """Get all items on this page"""
@@ -50,8 +63,3 @@ class ParserLisSkins:
         if item_discount and int(item_discount.text.strip().replace('%', '')) < -30:
             return item_discount.text.strip()
         return False
-
-    def __write_file(self) -> None:
-        """This method write data about items to json file (results.json)"""
-        with open('results.json', 'w', encoding='utf-8') as f:
-            json.dump(self.__items_data, f, ensure_ascii=False, indent=4)
