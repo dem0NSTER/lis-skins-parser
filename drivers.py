@@ -47,8 +47,8 @@ class LisSkinsDriver(ChromeDriver):
         if not type(url) == str:
             raise ValueError('invalid link')
 
-        if not 'lis-skins.ru' in url:
-            raise ValueError('invalid link')
+        # if not 'lis-skins.ru' in url:
+        #     raise ValueError('invalid link')
 
         self.__url = url
 
