@@ -1,11 +1,14 @@
 import time
 
+from Lib import pickle
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 
 
 class ChromeDriver:
     """Base class for drivers"""
+
     def __init__(self, url=''):
         self.url = url
         self.html = None
@@ -27,6 +30,7 @@ class ChromeDriver:
 
 class LisSkinsDriver(ChromeDriver):
     """Driver for lis-skins!!!"""
+
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
         self.create_driver()
@@ -45,26 +49,35 @@ class LisSkinsDriver(ChromeDriver):
 class SteamDriver(ChromeDriver):
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
-        ...
+        self.create_driver()
+        self.driver.get(self.url)
+        self.load_cookie()
+        self.html = self.driver.page_source
+        self.driver.close()
+        return self.html
 
     def apdate_cookies(self):
-        ...
+        """This method can updata your cookies"""
+        self.create_driver()
+        self.driver.get('https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Field-Tested%29')
+        time.sleep(4)
+        self.driver.find_element(By.CLASS_NAME, 'global_action_link').click()
+        time.sleep(30)
+
+        pickle.dump(self.driver.get_cookies(), open('cookies', 'wb'))
+        time.sleep(1)
+
+        self.driver.close()
+
+    def load_cookie(self):
+        """This mehtod used for load your cookies"""
+        for cookie in pickle.load(open('cookies', 'rb')):
+            self.driver.add_cookie(cookie)
+        time.sleep(0.1)
+        self.driver.refresh()
+        time.sleep(0.3)
 
 
 if __name__ == '__main__':
-    driver = LisSkinsDriver(
-        url=f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=5&is_without_souvenir=1&page={1}')
-
-    # with open('index.html', 'w') as file:
-    #     file.write(driver.get_html())
-    page = 1
-
-    while True:
-        driver.url = f'https://lis-skins.ru/market/csgo/awp/?price_from=1&price_to=50&is_without_souvenir=1&page={page}'
-        with open(f'index_{page}.html', 'w') as file:
-            file.write(driver.get_html())
-
-        last_page = 2
-        if page == last_page:
-            break
-        page += 1
+    driver = SteamDriver()
+    driver.apdate_cookies()

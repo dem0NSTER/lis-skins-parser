@@ -1,30 +1,27 @@
-import time
-from selenium.common.exceptions import TimeoutException
-from selenium import webdriver
+from drivers import SteamDriver
 
-options = webdriver.ChromeOptions()
-options.add_argument(
-    'user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36')
-options.add_experimental_option("excludeSwitches", ["enable-automation"])
-options.add_experimental_option('useAutomationExtension', False)
+data = [{
+    "name": "StatTrak™ USP-S | Black Lotus (Field-Tested)",
+    "price": "3.06$",
+    "discount": "-32%",
+    "url": "https://lis-skins.ru/market/csgo/stattrak-usp-s-black-lotus-field-tested/?hold=-1",
+    "steam": "https://steamcommunity.com/market/listings/730/StatTrak™ USP-S | Black Lotus (Field-Tested)"
+},
+    {
+        "name": "Glock-18 | Nuclear Garden (Minimal Wear)",
+        "price": "2.56$",
+        "discount": "-31%",
+        "url": "https://lis-skins.ru/market/csgo/glock-18-nuclear-garden-minimal-wear/?hold=-1",
+        "steam": "https://steamcommunity.com/market/listings/730/Glock-18 | Nuclear Garden (Minimal Wear)"
+    }]
 
-driver = webdriver.Chrome(options=options)
-driver.set_page_load_timeout(3)
-try:
-    driver.get("https://lis-skins.ru/market/csgo/?price_from=70&price_to=1000&is_without_souvenir=1")
+driver = SteamDriver()
+count = 1
 
-except TimeoutException:
-    driver.execute_script('window.stop()')
+for item in data:
+    driver.url = item['steam']
+    driver.get_html()
 
-html = driver.page_source
-
-with open('index.html', 'w', encoding='utf-8') as file:
-    file.write(html)
-
-
-# driver.get("https://lis-skins.ru/market/csgo/?price_from=70&price_to=1000&is_without_souvenir=1")
-# time.sleep(100000)
-# page = driver.page_source
-#
-# driver.close()
-# print(page)
+    with open(f'steam_{count}.html', 'w', encoding='utf-8') as file:
+        file.write(driver.html)
+    count += 1
