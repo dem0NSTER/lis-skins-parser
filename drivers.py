@@ -1,11 +1,11 @@
 import time
 
 from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
 
 
 class ChromeDriver:
     """Base class for drivers"""
-
     def __init__(self, url=''):
         self.url = url
         self.html = None
@@ -27,30 +27,19 @@ class ChromeDriver:
 
 class LisSkinsDriver(ChromeDriver):
     """Driver for lis-skins!!!"""
-
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
-        # self.create_driver()
         self.create_driver()
-        self.driver.get(self.url)
-        time.sleep(1)
+
+        self.driver.set_page_load_timeout(3)
+        try:
+            self.driver.get(self.url)
+        except TimeoutException:
+            self.driver.execute_script('window.stop()')
+
         self.html = self.driver.page_source
         self.driver.close()
         return self.html
-
-    @property
-    def url(self):
-        return self.__url
-
-    @url.setter
-    def url(self, url):
-        if not type(url) == str:
-            raise ValueError('invalid link')
-
-        # if not 'lis-skins.ru' in url:
-        #     raise ValueError('invalid link')
-
-        self.__url = url
 
 
 class SteamDriver(ChromeDriver):
@@ -58,19 +47,8 @@ class SteamDriver(ChromeDriver):
         """this method get page's html code, return html code"""
         ...
 
-    @property
-    def url(self):
-        return self.__url
-
-    @url.setter
-    def url(self, url):
-        if not type(url) == str:
-            raise ValueError('invalid link')
-
-        if not 'steamcommunity.com' in url:
-            raise ValueError('invalid link')
-
-        self.__url = url
+    def apdate_cookies(self):
+        ...
 
 
 if __name__ == '__main__':
