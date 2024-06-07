@@ -51,12 +51,12 @@ class SteamDriver(ChromeDriver):
         """this method get page's html code, return html code"""
         self.create_driver()
         self.driver.get(self.url)
-        self.load_cookie()
+        self.__load_cookie()
         self.html = self.driver.page_source
         self.driver.close()
         return self.html
 
-    def apdate_cookies(self):
+    def update_cookies(self):
         """This method can updata your cookies"""
         self.create_driver()
         self.driver.get('https://steamcommunity.com/market/listings/730/AK-47%20%7C%20Slate%20%28Field-Tested%29')
@@ -69,7 +69,7 @@ class SteamDriver(ChromeDriver):
 
         self.driver.close()
 
-    def load_cookie(self):
+    def __load_cookie(self):
         """This mehtod used for load your cookies"""
         for cookie in pickle.load(open('cookies', 'rb')):
             self.driver.add_cookie(cookie)
@@ -80,4 +80,7 @@ class SteamDriver(ChromeDriver):
 
 if __name__ == '__main__':
     driver = SteamDriver()
-    driver.apdate_cookies()
+    driver.url = 'https://steamcommunity.com/market/listings/730/Operation%20Riptide%20Case'
+    html = driver.get_html()
+    with open('index.html', 'w', encoding='utf-8') as file:
+        file.write(html)

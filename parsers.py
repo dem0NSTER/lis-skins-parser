@@ -36,7 +36,7 @@ class ParserLisSkins:
     def get_count_pages(self) -> int:
         """Get count of pages"""
         data = self.soup.find_all(class_='page-link')
-        if len(data) == 0:  # if sity have only on page!
+        if len(data) == 0:  # if websity have only on page!
             self.pages = 1
             return self.pages
 
@@ -66,7 +66,33 @@ class ParserLisSkins:
 
 
 class ParserSteam:
-    ...
+    def __init__(self, html=''):
+        self.html = html
+        self.soup = BeautifulSoup(self.html, 'lxml')
+        self.steam_price = None
+
+    def set_html(self, html: str) -> None:
+        """This method can change html code which it scraping"""
+        self.html = html
+        self.soup = BeautifulSoup(self.html, 'lxml')
+
+    def get_data_on_page(self) -> float:
+        """This method can get steam price of this skin and return it"""
+        price_list = self.soup.find_all(class_='market_listing_price market_listing_price_without_fee')
+
+        if len(price_list) == 0:
+            self.steam_price = 0
+            return self.steam_price
+
+        for price in price_list:
+            if price.text.strip() == 'Продано!':
+                continue
+            skin_price = price.text.strip().split()
+            if skin_price[-1] != 'pуб.':
+                raise ValueError('cookies error')
+            self.steam_price = float(skin_price[0].replace(',', '.'))
+            break
+        return self.steam_price
 
 
 if __name__ == '__main__':
