@@ -76,7 +76,7 @@ class ParserSteam:
         self.html = html
         self.soup = BeautifulSoup(self.html, 'lxml')
 
-    def get_data_on_page(self) -> float:
+    def get_price(self) -> float:
         """This method can get steam price of this skin and return it"""
         price_list = self.soup.find_all(class_='market_listing_price market_listing_price_without_fee')
 
