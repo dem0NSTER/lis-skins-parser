@@ -9,12 +9,13 @@ def steam_parser(data: dict) -> dict:
     steam_driver = SteamDriver()
     steam_parser = ParserSteam()
 
-    for item in data:
+    for count, item in enumerate(data):
         link = item['steam']
         steam_driver.url = link
         html = steam_driver.get_html()
         steam_parser.set_html(html)
         price = steam_parser.get_price()
+        print(f'{count + 1} / {len(data)}')  # info in console
         item["price_steam"] = price  # this key has value which include price in steam without commision
 
     return data
@@ -39,5 +40,6 @@ if __name__ == '__main__':
     ]
 
     diction = steam_parser(data)
-    with open('final_result.json', 'w', encoding='utf-8') as file:
-        json.dump(diction, file, ensure_ascii=False, indent=4)
+    # with open('final_result.json', 'w', encoding='utf-8') as file:
+    #     json.dump(diction, file, ensure_ascii=False, indent=4)
+    print(diction)

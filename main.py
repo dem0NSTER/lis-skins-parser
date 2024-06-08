@@ -1,27 +1,22 @@
-from drivers import SteamDriver
+import json
 
-data = [{
-    "name": "StatTrak™ USP-S | Black Lotus (Field-Tested)",
-    "price": "3.06$",
-    "discount": "-32%",
-    "url": "https://lis-skins.ru/market/csgo/stattrak-usp-s-black-lotus-field-tested/?hold=-1",
-    "steam": "https://steamcommunity.com/market/listings/730/StatTrak™ USP-S | Black Lotus (Field-Tested)"
-},
-    {
-        "name": "Glock-18 | Nuclear Garden (Minimal Wear)",
-        "price": "2.56$",
-        "discount": "-31%",
-        "url": "https://lis-skins.ru/market/csgo/glock-18-nuclear-garden-minimal-wear/?hold=-1",
-        "steam": "https://steamcommunity.com/market/listings/730/Glock-18 | Nuclear Garden (Minimal Wear)"
-    }]
+from func import rewrite_json, save_results, get_dollar
+from lis_skins_parser import lis_skins_parser
+from steam_parser import steam_parser
 
-driver = SteamDriver()
-count = 1
+# collect data from lis_skins and save this in lis_skins.json
+lis_skins_parser(
+    'https://lis-skins.ru/market/csgo/?category_id=10%2C3%2C7%2C28%2C19%2C11%2C32&price_from=3&price_to=5&hold=-1&is_without_souvenir=1')
 
-for item in data:
-    driver.url = item['steam']
-    driver.get_html()
+with open('lis_skins.json', encoding='utf-8') as file:
+    lis_skins_data = json.load(file)
 
-    with open(f'steam_{count}.html', 'w', encoding='utf-8') as file:
-        file.write(driver.html)
-    count += 1
+# add one key and value in diction (price in steam)
+results = steam_parser(lis_skins_data)
+
+# rewrite json: add line "profit"
+dollar = get_dollar()
+final_data = rewrite_json(results, dollar)
+
+# save results in json file (final_result.json)
+save_results(final_data)

@@ -45,7 +45,7 @@ class ParserLisSkins:
 
     def write_file(self) -> None:
         """This method write data about items to json file (results.json)"""
-        with open('results.json', 'w', encoding='utf-8') as f:
+        with open('lis_skins.json', 'w', encoding='utf-8') as f:
             json.dump(self.__items_data, f, ensure_ascii=False, indent=4)
 
     def __get_items(self) -> list:

@@ -23,6 +23,9 @@ class ChromeDriver:
         self.__options.add_experimental_option("excludeSwitches", ["enable-automation"])
         self.__options.add_experimental_option('useAutomationExtension', False)
 
+    def headless(self):
+        self.__options.add_argument('--headless')
+
     def create_driver(self) -> None:
         """This method make WedDriver. !!!Before you must use __set_options method!!!"""
         self.driver = webdriver.Chrome(options=self.__options)
@@ -33,6 +36,7 @@ class LisSkinsDriver(ChromeDriver):
 
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
+        # self.headless()
         self.create_driver()
 
         self.driver.set_page_load_timeout(3)
@@ -49,6 +53,7 @@ class LisSkinsDriver(ChromeDriver):
 class SteamDriver(ChromeDriver):
     def get_html(self) -> str:
         """this method get page's html code, return html code"""
+        self.headless()
         self.create_driver()
         self.driver.get(self.url)
         self.__load_cookie()
