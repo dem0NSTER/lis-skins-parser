@@ -20,3 +20,6 @@ final_data = rewrite_json(results, dollar)
 
 # save results in json file (final_result.json)
 save_results(final_data)
+
+print('[INFO] everythink was ok!')
+input('press enter to exit')

@@ -15,7 +15,7 @@ def steam_parser(data: dict) -> dict:
         html = steam_driver.get_html()
         steam_parser.set_html(html)
         price = steam_parser.get_price()
-        print(f'{count + 1} / {len(data)}')  # info in console
+        print(f'[INFO] steam: {count + 1} / {len(data)}')  # info in console
         item["price_steam"] = price  # this key has value which include price in steam without commision
 
     return data

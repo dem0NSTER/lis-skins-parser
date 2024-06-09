@@ -15,7 +15,7 @@ def lis_skins_parser(url: str) -> None:
         last_page = parser.get_count_pages()
         parser.get_data_on_page()
 
-        print(f'{page} / {last_page}')
+        print(f'[INFO] lis-skins: {page} / {last_page}')
         if page == last_page:
             break
         page += 1
