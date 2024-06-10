@@ -1,6 +1,7 @@
 import json
 
 from bs4 import BeautifulSoup
+from tools.func import write_json
 
 
 class ParserLisSkins:
@@ -45,8 +46,7 @@ class ParserLisSkins:
 
     def write_file(self) -> None:
         """This method write data about items to json file (results.json)"""
-        with open('lis_skins.json', 'w', encoding='utf-8') as f:
-            json.dump(self.__items_data, f, ensure_ascii=False, indent=4)
+        write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', self.__items_data)
 
     def __get_items(self) -> list:
         """Get all items on this page"""
@@ -88,8 +88,10 @@ class ParserSteam:
             if price.text.strip() == 'Продано!':
                 continue
             skin_price = price.text.strip().split()
+
             if skin_price[-1] != 'pуб.':
                 raise ValueError('cookies error')
+
             self.steam_price = float(skin_price[0].replace(',', '.'))
             break
         return self.steam_price

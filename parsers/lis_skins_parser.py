@@ -1,5 +1,5 @@
-from drivers import LisSkinsDriver
-from parsers import ParserLisSkins
+from tools.drivers import LisSkinsDriver
+from tools.parsers import ParserLisSkins
 
 
 def lis_skins_parser(url: str) -> None:

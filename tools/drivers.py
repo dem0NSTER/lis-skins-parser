@@ -69,14 +69,14 @@ class SteamDriver(ChromeDriver):
         self.driver.find_element(By.CLASS_NAME, 'global_action_link').click()
         time.sleep(30)
 
-        pickle.dump(self.driver.get_cookies(), open('cookies', 'wb'))
+        pickle.dump(self.driver.get_cookies(), open('D:/Python_program/scraping_lis_skins/cookies', 'wb'))
         time.sleep(1)
 
         self.driver.close()
 
     def __load_cookie(self):
         """This mehtod used for load your cookies"""
-        for cookie in pickle.load(open('cookies', 'rb')):
+        for cookie in pickle.load(open('D:/Python_program/scraping_lis_skins/cookies', 'rb')):
             self.driver.add_cookie(cookie)
         time.sleep(0.1)
         self.driver.refresh()
