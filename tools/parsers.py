@@ -1,4 +1,5 @@
 import json
+from _operator import itemgetter
 
 from bs4 import BeautifulSoup
 from tools.func import write_json
@@ -22,6 +23,7 @@ class ParserLisSkins:
                 continue
             item_name = item.find_all('img')[-1].get('alt')
             item_price = item.find(class_='price').text.strip()
+            item_price = float(item_price.replace(' ', ''))
             steam_url = 'https://steamcommunity.com/market/listings/730/' + item_name.replace('�', '™')
             item_url = item.find(class_='name').get('href')
             self.__add_item(
@@ -46,7 +48,8 @@ class ParserLisSkins:
 
     def write_file(self) -> None:
         """This method write data about items to json file (results.json)"""
-        write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', self.__items_data)
+        data = sorted(self.__items_data, key=itemgetter('discount'), reverse=True)
+        write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', data)
 
     def __get_items(self) -> list:
         """Get all items on this page"""

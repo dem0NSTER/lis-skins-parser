@@ -1,6 +1,6 @@
 import time
-
 from Lib import pickle
+
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
@@ -39,15 +39,43 @@ class LisSkinsDriver(ChromeDriver):
         # self.headless()
         self.create_driver()
 
-        self.driver.set_page_load_timeout(3)
+        self.driver.set_page_load_timeout(1.5)
         try:
             self.driver.get(self.url)
+        except TimeoutException:
+            self.driver.execute_script('window.stop()')
+
+        try:
+            self.__load_cookies()
         except TimeoutException:
             self.driver.execute_script('window.stop()')
 
         self.html = self.driver.page_source
         self.driver.close()
         return self.html
+
+    def update_cookies(self) -> None:
+        """this method get page's html code, return html code"""
+        # self.headless()
+        self.create_driver()
+
+        self.driver.set_page_load_timeout(10)
+        try:
+            self.driver.get(
+                'https://lis-skins.ru/market/csgo/awp-fever-dream-battle-scarred/?hold=-1')
+        except TimeoutException:
+            self.driver.execute_script('window.stop()')
+
+        pickle.dump(self.driver.get_cookies(), open('D:/Python_program/scraping_lis_skins/cookie/cookies_lis_skins', 'wb'))
+        time.sleep(1)
+        self.driver.close()
+
+    def __load_cookies(self) -> None:
+        """This mehtod used for load your cookies"""
+        for cookie in pickle.load(open('D:/Python_program/scraping_lis_skins/cookie/cookies_lis_skins', 'rb')):
+            self.driver.add_cookie(cookie)
+        time.sleep(0.1)
+        self.driver.refresh()
 
 
 class SteamDriver(ChromeDriver):
@@ -69,14 +97,14 @@ class SteamDriver(ChromeDriver):
         self.driver.find_element(By.CLASS_NAME, 'global_action_link').click()
         time.sleep(30)
 
-        pickle.dump(self.driver.get_cookies(), open('D:/Python_program/scraping_lis_skins/cookies', 'wb'))
+        pickle.dump(self.driver.get_cookies(), open('D:/Python_program/scraping_lis_skins/cookie/cookies', 'wb'))
         time.sleep(1)
 
         self.driver.close()
 
     def __load_cookie(self):
         """This mehtod used for load your cookies"""
-        for cookie in pickle.load(open('D:/Python_program/scraping_lis_skins/cookies', 'rb')):
+        for cookie in pickle.load(open('D:/Python_program/scraping_lis_skins/cookie/cookies', 'rb')):
             self.driver.add_cookie(cookie)
         time.sleep(0.1)
         self.driver.refresh()

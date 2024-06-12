@@ -33,6 +33,7 @@ def steam_parser(data: dict) -> dict:
             # Saving remainining items in lis_skins.json
             remaining_items = data[last_element_index:]
             write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', remaining_items)
+            break
 
     write_json('D:/Python_program/scraping_lis_skins/json/steam.json', results)
     return results
