@@ -65,6 +65,7 @@ class LisSkinsDriver(ChromeDriver):
                 'https://lis-skins.ru/market/csgo/awp-fever-dream-battle-scarred/?hold=-1')
         except TimeoutException:
             self.driver.execute_script('window.stop()')
+        time.sleep(5)
 
         pickle.dump(self.driver.get_cookies(), open('D:/Python_program/scraping_lis_skins/cookie/cookies_lis_skins', 'wb'))
         time.sleep(1)

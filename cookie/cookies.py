@@ -10,5 +10,6 @@ def main(steam=True):
         cookies_updater.update_cookies()
 
 
-
-main()
+if __name__ == '__main__':
+    # main()
+    main(steam=False)

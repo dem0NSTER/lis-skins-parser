@@ -1,8 +1,18 @@
 import json
 from _operator import itemgetter
+from json import JSONDecodeError
 
-import requests
-from bs4 import BeautifulSoup
+
+def is_empty_json(path: str) -> bool:
+    """return True if json file has not any data"""
+    try:
+        data = read_json(path)
+        if len(data) == 0:
+            return True
+        return False
+
+    except JSONDecodeError:
+        return True
 
 
 def read_json(path: str) -> json:
@@ -12,16 +22,16 @@ def read_json(path: str) -> json:
 
 
 def write_json(path: str, data, mode='w') -> None:
-    with open(path, mode, encoding='utf-8') as file:
+    """This function can write data to json file"""
+    is_empty = is_empty_json(path)
+
+    if mode == 'a' and not is_empty:  # append mode
+        old_data = read_json(path)
+        new_data = data
+        data = old_data + new_data
+
+    with open(path, 'w', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
-
-
-def get_dollar() -> float:
-    """This function can get course of dollar"""
-    req = requests.get('https://www.banki.ru/products/currency/usd/').text
-    soup = BeautifulSoup(req, 'lxml')
-    dollar = float(soup.find(class_='Text__sc-j452t5-0 bCCQWi').text.split()[0].replace(',', '.'))
-    return dollar
 
 
 def del_data_file(file_nama: str) -> None:
@@ -45,7 +55,6 @@ def rewrite_json(data: json, min_profit_you_want=25) -> json:
         if price_steam == 0:  # if i cant find price in steam
             del item['price_steam']
             cant_find_items.append(item)
-            write_json('D:/Python_program/scraping_lis_skins/json/cant_find.json', cant_find_items)
             continue
 
         profit = (price_steam - price) / price
@@ -64,7 +73,29 @@ def rewrite_json(data: json, min_profit_you_want=25) -> json:
             }
         )
     print(f'[INFO] I can not find {len(cant_find_items)} elements')
+    write_json('D:/Python_program/scraping_lis_skins/json/cant_find.json', cant_find_items, 'a')
     return results
+
+
+def delete_dublicates_from_json(path: str) -> None:
+    """This function can delete all recurring elements"""
+
+    if is_empty_json(path):
+        return
+
+    items = read_json(path)
+
+    data = set()
+    unique_items = []
+
+    for item in items:
+        unique_key = (item['name'], item['price'], item['discount'], item['url'], item['steam'])
+        if unique_key not in data:
+            data.add(unique_key)
+            unique_items.append(item)
+
+    write_json(path, unique_items)
+    print(f"Removed duplicates. {len(unique_items)} unique items saved.")
 
 
 def save_results(data: json, mode='w') -> None:
@@ -80,7 +111,7 @@ def save_results(data: json, mode='w') -> None:
 
 
 def del_all_data():
-    # del old data from files
+    """del old data from files"""
     del_data_file('json/lis_skins.json')
     del_data_file('json/steam.json')
     del_data_file('json/cant_find.json')
@@ -89,7 +120,5 @@ def del_all_data():
 
 if __name__ == '__main__':
     data = read_json('D:/Python_program/scraping_lis_skins/json/steam.json')
-
-    results = rewrite_json(data)
-
-    save_results(results)
+    data = rewrite_json(data)
+    delete_dublicates_from_json('D:/Python_program/scraping_lis_skins/json/cant_find.json')
