@@ -24,4 +24,4 @@ def lis_skins_parser(url: str) -> None:
 
 
 if __name__ == '__main__':
-    lis_skins_parser('https://lis-skins.ru/market/csgo/?category_id=10%2C3%2C7%2C28%2C19%2C11%2C32&price_from=3&price_to=5&is_without_souvenir=1')
+    lis_skins_parser('https://lis-skins.ru/market/csgo/?category_id=10%2C3%2C7%2C28%2C19%2C11%2C32&price_from=50&price_to=70&hold=-1&is_without_souvenir=1')

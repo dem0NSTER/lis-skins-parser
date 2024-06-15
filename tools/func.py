@@ -15,6 +15,12 @@ def is_empty_json(path: str) -> bool:
         return True
 
 
+def calculate_profit(price_steam: float, price_website: float) -> float:
+    """This func can calculate profit, which you can get"""
+    profit = (price_steam - price_website) / price_website
+    final_profit = round(profit, 4) * 100
+    return final_profit
+
 def read_json(path: str) -> json:
     with open(path, encoding='utf-8') as file:
         data = json.load(file)
@@ -48,19 +54,22 @@ def rewrite_json(data: json, min_profit_you_want=25) -> json:
 
     for item in data:
         item_name = item['name']  # name of skin
-        price = item['price']  # price in dollars
+        price = item['price']  # price on lis-skins
 
         url = item['url']  # link for skin on lis-skins
         price_steam = item['price_steam']
+        fast_price_steam = item['fast_price_steam']
+
         if price_steam == 0:  # if i cant find price in steam
             del item['price_steam']
+            del item['fast_price_steam']
             cant_find_items.append(item)
             continue
 
-        profit = (price_steam - price) / price
-        final_profit = round(profit, 4) * 100
+        profit = calculate_profit(price_steam, price)
+        fast_profit = calculate_profit(fast_price_steam, price)
 
-        if final_profit < min_profit_you_want:
+        if profit < min_profit_you_want:
             continue
 
         results.append(
@@ -68,7 +77,8 @@ def rewrite_json(data: json, min_profit_you_want=25) -> json:
                 "name": item_name,
                 "price": price,
                 "price_steam": price_steam,
-                "profit": final_profit,
+                "profit": profit,
+                "fast_profit": fast_profit,
                 "url": url
             }
         )
@@ -98,7 +108,7 @@ def delete_dublicates_from_json(path: str) -> None:
     print(f"Removed duplicates. {len(unique_items)} unique items saved.")
 
 
-def save_results(data: json, mode='w') -> None:
+def save_results(data: json, mode='w', fast_profit=False) -> None:
     """This funciton sorted data and save all in final_results.json"""
 
     if mode == 'a':
@@ -106,7 +116,11 @@ def save_results(data: json, mode='w') -> None:
         new_data = data
         data = old_data + new_data
 
-    data = sorted(data, key=itemgetter('profit'), reverse=True)
+    if fast_profit:
+        data = sorted(data, key=itemgetter('fast_profit'), reverse=True)
+    else:
+        data = sorted(data, key=itemgetter('profit'), reverse=True)
+
     write_json('D:/Python_program/scraping_lis_skins/json/final_result.json', data)
 
 
@@ -121,4 +135,4 @@ def del_all_data():
 if __name__ == '__main__':
     data = read_json('D:/Python_program/scraping_lis_skins/json/steam.json')
     data = rewrite_json(data)
-    delete_dublicates_from_json('D:/Python_program/scraping_lis_skins/json/cant_find.json')
+    save_results(data, fast_profit=True)

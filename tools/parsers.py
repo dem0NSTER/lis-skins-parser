@@ -1,7 +1,7 @@
-import json
 from _operator import itemgetter
 
 from bs4 import BeautifulSoup
+
 from tools.func import write_json
 
 
@@ -73,6 +73,7 @@ class ParserSteam:
         self.html = html
         self.soup = BeautifulSoup(self.html, 'lxml')
         self.steam_price = None
+        self.fast_steam_price = None
 
     def set_html(self, html: str) -> None:
         """This method can change html code which it scraping"""
@@ -92,30 +93,36 @@ class ParserSteam:
                 continue
             skin_price = price.text.strip().split()
 
-            if skin_price[-1] != 'pуб.':
-                raise ValueError('cookies error')
+            self.check_cookies(skin_price)
 
             self.steam_price = float(skin_price[0].replace(',', '.'))
             break
         return self.steam_price
 
+    def get_fast_price(self) -> float:
+        """This method can get steam autobuy price of this skin and return it"""
+
+        auto_buy_prices = self.soup.find_all(class_='market_commodity_orders_header_promote')
+
+        if len(auto_buy_prices) == 0:
+            self.steam_price = 0
+            return self.steam_price
+
+        skin_fast_price = auto_buy_prices[-1].text.strip().split()
+
+        self.check_cookies(skin_fast_price)
+
+        skin_fast_price = float(skin_fast_price[0].replace(',', '.'))
+
+        self.fast_steam_price = round((skin_fast_price - (skin_fast_price * 0.13)), 2)
+        return self.fast_steam_price
+
+    @staticmethod
+    def check_cookies(skin_price: list) -> None:
+        """This method raise ValueError if we have problem with cookies"""
+        if skin_price[-1] != 'pуб.':
+            raise ValueError('cookies error')
+
 
 if __name__ == '__main__':
-    parser = ParserLisSkins()
-    page = 1
-
-    while True:
-        with open(f'index_{page}.html') as file:
-            src = file.read()
-
-        parser.set_html(src)
-        count = parser.get_count_pages()
-        parser.get_data_on_page()
-
-        last_page = 2
-        if page == last_page:
-            break
-        page += 1
-
-    print(count)
-    parser.write_file()
+    ...

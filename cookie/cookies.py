@@ -11,5 +11,5 @@ def main(steam=True):
 
 
 if __name__ == '__main__':
-    # main()
+    main()
     main(steam=False)

@@ -1,9 +1,11 @@
+import json
+
 from tools.drivers import SteamDriver
 from tools.func import read_json, write_json, del_data_file
 from tools.parsers import ParserSteam
 
 
-def steam_parser(data: dict, cant_find=False) -> dict:
+def steam_parser(data: json, cant_find=False) -> json:
     """This func add in dict data one key (price_steam) and value (this value is prace in steam without commision)"""
     steam_driver = SteamDriver()
     steam_parser = ParserSteam()
@@ -18,6 +20,9 @@ def steam_parser(data: dict, cant_find=False) -> dict:
             html = steam_driver.get_html()
             steam_parser.set_html(html)
             price = steam_parser.get_price()
+            fast_price = steam_parser.get_fast_price()
+
+            item["fast_price_steam"] = fast_price  # this key has value which include price in steam without commision
             item["price_steam"] = price  # this key has value which include price in steam without commision
 
             results.append(item)  # add information about item in list results
@@ -25,7 +30,7 @@ def steam_parser(data: dict, cant_find=False) -> dict:
             print(f'[INFO] steam: {count + 1} / {len(data)}')  # info in console
 
         except Exception as ex:
-            was_Exception = True   # if an exception occurred
+            was_Exception = True  # if an exception occurred
 
             print(f'[WARNING] exception: {ex}')
             last_element_index = count + 1

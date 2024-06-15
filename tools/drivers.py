@@ -114,7 +114,7 @@ class SteamDriver(ChromeDriver):
 
 if __name__ == '__main__':
     driver = SteamDriver()
-    driver.url = 'https://steamcommunity.com/market/listings/730/Operation%20Riptide%20Case'
+    driver.url = 'https://steamcommunity.com/market/listings/730/M4A4%20%7C%20Temukau%20%28Field-Tested%29'
     html = driver.get_html()
     with open('index.html', 'w', encoding='utf-8') as file:
         file.write(html)
