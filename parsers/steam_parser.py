@@ -1,5 +1,6 @@
 import json
 
+from tools.tools import PATH_TO_PROJECT
 from tools.drivers import SteamDriver
 from tools.func import read_json, write_json, del_data_file
 from tools.parsers import ParserSteam
@@ -40,21 +41,21 @@ def steam_parser(data: json, cant_find=False) -> json:
 
             # Saving remainining items in lis_skins.json
             remaining_items = data[last_element_index:]
-            write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', remaining_items)
+            write_json(f'{PATH_TO_PROJECT}/json/lis_skins.json', remaining_items)
             break
 
     if not was_Exception:  # if an exception occurred
         if cant_find:
-            del_data_file('D:/Python_program/scraping_lis_skins/json/cant_find.json')
+            del_data_file(f'{PATH_TO_PROJECT}/json/cant_find.json')
         else:
-            del_data_file('D:/Python_program/scraping_lis_skins/json/lis_skins.json')
+            del_data_file(f'{PATH_TO_PROJECT}/json/lis_skins.json')
 
-    write_json('D:/Python_program/scraping_lis_skins/json/steam.json', results)
+    write_json(f'{PATH_TO_PROJECT}/json/steam.json', results)
     return results
 
 
 if __name__ == '__main__':
-    data = read_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json')
+    data = read_json(f'{PATH_TO_PROJECT}/json/lis_skins.json')
 
     diction = steam_parser(data)
     print(diction)

@@ -1,5 +1,6 @@
 import time
 
+from tools.tools import PATH_TO_PROJECT
 from tools.func import is_empty_json
 from not_processed_el import not_processed_elements
 from cant_find_el import cant_find_elements
@@ -16,7 +17,7 @@ def main(lis_skins_base_url, fast_profit=False):
             time.sleep(4)
             print('[INFO] first time ended')
 
-        if not is_empty_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json'):
+        if not is_empty_json('/json/lis_skins.json'):
             print('[INFO] start not processed elements')
             not_processed_elements(fast_profit=fast_profit)
             print('[INFO] end not processed elements')
@@ -25,10 +26,10 @@ def main(lis_skins_base_url, fast_profit=False):
 
         print('[INFO] lis_skins.json is empty. The only thing left to do is to process the items not found')
 
-        if not is_empty_json('D:/Python_program/scraping_lis_skins/json/cant_find.json'):
+        if not is_empty_json('/json/cant_find.json'):
             cant_find_elements(fast_profit=fast_profit)
 
-        if is_empty_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json') and is_empty_json('D:/Python_program/scraping_lis_skins/json/cant_find.json'):
+        if is_empty_json('/json/lis_skins.json') and is_empty_json('/json/cant_find.json'):
             print('[INFO] everythig is ok')
             break
 

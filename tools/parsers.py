@@ -3,6 +3,7 @@ from _operator import itemgetter
 from bs4 import BeautifulSoup
 
 from tools.func import write_json
+from tools.tools import PATH_TO_PROJECT
 
 
 class ParserLisSkins:
@@ -49,7 +50,7 @@ class ParserLisSkins:
     def write_file(self) -> None:
         """This method write data about items to json file (results.json)"""
         data = sorted(self.__items_data, key=itemgetter('discount'), reverse=True)
-        write_json('D:/Python_program/scraping_lis_skins/json/lis_skins.json', data)
+        write_json(f'{PATH_TO_PROJECT}/json/lis_skins.json', data)
 
     def __get_items(self) -> list:
         """Get all items on this page"""

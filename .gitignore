@@ -1,0 +1,8 @@
+.env
+cookie/cookies
+cookie/cookies_lis_skins
+json/
+test.py
+venv/
+.idea/
+__pycache__/

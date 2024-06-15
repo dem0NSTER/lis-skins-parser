@@ -1,4 +1,6 @@
 import json
+
+from tools.tools import PATH_TO_PROJECT
 from _operator import itemgetter
 from json import JSONDecodeError
 
@@ -83,7 +85,7 @@ def rewrite_json(data: json, min_profit_you_want=25) -> json:
             }
         )
     print(f'[INFO] I can not find {len(cant_find_items)} elements')
-    write_json('D:/Python_program/scraping_lis_skins/json/cant_find.json', cant_find_items, 'a')
+    write_json(f'{PATH_TO_PROJECT}/json/cant_find.json', cant_find_items, 'a')
     return results
 
 
@@ -112,7 +114,7 @@ def save_results(data: json, mode='w', fast_profit=False) -> None:
     """This funciton sorted data and save all in final_results.json"""
 
     if mode == 'a':
-        old_data = read_json('D:/Python_program/scraping_lis_skins/json/final_result.json')
+        old_data = read_json(f'{PATH_TO_PROJECT}/json/final_result.json')
         new_data = data
         data = old_data + new_data
 
@@ -121,18 +123,18 @@ def save_results(data: json, mode='w', fast_profit=False) -> None:
     else:
         data = sorted(data, key=itemgetter('profit'), reverse=True)
 
-    write_json('D:/Python_program/scraping_lis_skins/json/final_result.json', data)
+    write_json(f'{PATH_TO_PROJECT}/json/final_result.json', data)
 
 
 def del_all_data():
     """del old data from files"""
-    del_data_file('json/lis_skins.json')
-    del_data_file('json/steam.json')
-    del_data_file('json/cant_find.json')
-    del_data_file('json/final_result.json')
+    del_data_file(f'{PATH_TO_PROJECT}/json/lis_skins.json')
+    del_data_file(f'{PATH_TO_PROJECT}/json/steam.json')
+    del_data_file(f'{PATH_TO_PROJECT}/json/cant_find.json')
+    del_data_file(f'{PATH_TO_PROJECT}/json/final_result.json')
 
 
 if __name__ == '__main__':
-    data = read_json('D:/Python_program/scraping_lis_skins/json/steam.json')
+    data = read_json(f'{PATH_TO_PROJECT}/json/steam.json')
     data = rewrite_json(data)
     save_results(data, fast_profit=True)
